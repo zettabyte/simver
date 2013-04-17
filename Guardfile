@@ -12,3 +12,6 @@ guard 'rspec' do
   watch('spec/spec_helper.rb') { 'spec' }
 end
 
+guard :cane do
+  watch(/.*\.rb/)
+end
