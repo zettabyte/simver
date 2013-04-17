@@ -10,8 +10,8 @@ gemspec
 # be silently installed on any platform. See the 'guard' gem's README
 # for more explanation.
 group :development do
-  gem 'rb-inotify', :require => false
-  gem 'rb-fsevent', :require => false
-  gem 'rb-fchange', :require => false
+  gem 'rb-fchange', '~> 0.0.6', :require => false
+  gem 'rb-fsevent', '~> 0.9.3', :require => false
+  gem 'rb-inotify', '~> 0.9.0', :require => false
 end
 

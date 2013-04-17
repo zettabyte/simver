@@ -22,9 +22,13 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
-  gem.add_development_dependency 'rspec'
-  gem.add_development_dependency 'guard'
-  gem.add_development_dependency 'guard-bundler'
-  gem.add_development_dependency 'guard-rspec'
-  gem.add_development_dependency 'guard-cane'
+  gem.add_development_dependency 'rake',          '~> 10.0'
+  gem.add_development_dependency 'bundler',       '~> 1.0'
+  gem.add_development_dependency 'rspec',         '~> 2.13'
+  gem.add_development_dependency 'cane',          '~> 2.5'
+  gem.add_development_dependency 'guard',         '~> 1.7'
+  gem.add_development_dependency 'guard-bundler', '~> 1.0'
+  gem.add_development_dependency 'guard-rspec',   '~> 2.5'
+  gem.add_development_dependency 'guard-cane',    '~> 0.1.2'
 end
+
