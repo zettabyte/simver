@@ -1,5 +1,5 @@
 # encoding: utf-8
-source :rubygems
+source 'https://rubygems.org'
 
 # Gem's dependencies in simver.gemspec
 gemspec
