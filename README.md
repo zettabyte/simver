@@ -91,6 +91,76 @@ require 'simver/patch'
 1.2 > Simver('1.2.0-alpha.0') # => true
 ```
 
+### Querying, Aliases, and Sub-Types
+
+You can access the individual components of the version number as
+follows:
+
+```ruby
+require 'simver'
+v = Simver('1.2.3-rc.1+build.2.a8c190f1')
+v.major       # => 1
+v.minor       # => 2
+v.patch       # => 3
+v.pre_release # => <Simver::PreRelease: "rc.1">
+v.build       # => <Simver::Build: "build.2.a8c190f1">
+v.to_s        # => "1.2.3-rc.1+build.2.a8c190f1"
+v.parts       # => [1, 2, 3, ["rc", 1], ["build", 2, "a8c190f1"]]
+```
+
+The `#major`, `#minor` and `#patch` methods return their respective
+component values as integers. Since these parts of any semantic version
+number must be a non-negative integral value, returning these parts as
+integers is safe and allows for immediate comparison with other
+integers.
+
+As you can see, however, the `#pre_release` and `#build` methods return
+special types, provided by the `simver` gem to represent these
+components. Both the `Simver::PreRelease` and `Simver::Build` types are
+basically identical (since the semantic versioning rules regarding these
+parts are basically the same). They both delegate to `String` and so can
+be used anywhere you need a string. They provide their own comparison
+logic, however, and also provide a few additional methods:
+
+```ruby
+require 'simver'
+p = Simver::PreRelease.new('rc.1') # => <SimVer::PreRelease: "rc.1"> (inspect implementation)
+p.to_s                             # => "rc.1"
+p.parts                            # => ["rc", 1]
+```
+
+The basic query methods have a few aliases as well:
+
+```ruby
+require 'simver'
+v = Simver('1.2.3-rc.1+build.2.a8c190f1')
+v.pre    # => <Simver::PreRelease: "rc.1">
+v.first  # => 1 (alias of #major)
+v.tiny   # => 3 (alias of #patch)
+v.last   # => <Simver::Build: "build.2.a8c190f1"> (alias of #build)
+v[0]     # => 1 (array-style access of #major)
+v[1]     # => 2 (array-style access of #minor)
+v[2]     # => 3 (array-style access of #patch)
+v[3]     # => <Simver::PreRelease: "rc.1"> (etc.)
+v[4]     # => <Simver::Build: "build.2.a8c190f1">
+```
+
+Finally, there are a few other methods of note:
+```ruby
+require 'simver'
+v = Simver('1.2.3-rc.1+build.2.a8c190f1')
+v.length # => 5 (always 5, even if pre-release and/or build nil)
+v.pre_release? # => true
+v.pre?         # => true
+v.build?       # => true
+v = Simver('1.2.3')
+v.pre?         # => false
+v.build?       # => false
+v.pre          # => nil
+v.build        # => nil
+v.parts        # => [1, 2, 3]
+```
+
 ### Modification?
 
 No! `Simver` instances are immutable objects, much like integers! There
