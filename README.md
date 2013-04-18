@@ -116,18 +116,7 @@ integers.
 
 As you can see, however, the `#pre_release` and `#build` methods return
 special types, provided by the `simver` gem to represent these
-components. Both the `Simver::PreRelease` and `Simver::Build` types are
-basically identical (since the semantic versioning rules regarding these
-parts are basically the same). They both delegate to `String` and so can
-be used anywhere you need a string. They provide their own comparison
-logic, however, and also provide a few additional methods:
-
-```ruby
-require 'simver'
-p = Simver::PreRelease.new('rc.1') # => <SimVer::PreRelease: "rc.1"> (inspect implementation)
-p.to_s                             # => "rc.1"
-p.parts                            # => ["rc", 1]
-```
+components. These are described later in the 'Sub-Types' section below.
 
 The basic query methods have a few aliases as well:
 
@@ -246,6 +235,43 @@ for enumation features, but range membership and coverage features.
 **WARN:** just consider yourself warned with respect to trying to use
  `Range`s based on `Simver`s for any kind of iteration!
 
+### Sub-Types
+
+The `#pre_release` and `#build` methods return their respective
+components of the version number as `Simver::PreRelease` and
+`Simver::Build` instances. These two types are essentially identical and
+so just the `Simver::Build` class is described, though everything
+mentioned also applies to `Simver::PreRelease`.
+
+This class, from an API perspective, looks like a cross between a string
+and an array. As such, it can be used in place of string in places where
+it won't be mutated, accessed using the bracket `#[]`/`#[]=` operators,
+or have `#length` called. The `#length` method and bracket operators
+provide an array-like interface (including support of `Enumerable`).
+
+The `Simver::Build` class provides its own comparision logic (and is
+`Comparable`). Just like the main `Simver` type, instances can be
+compared against each other and against compatible types. However, the
+order of comparison with compatible types matters unless you've
+'patched' the core types by doing a `require 'simver/patch'`.
+
+```ruby
+require 'simver'
+b = Simver::Build.new('say.hi.2.5.people') # => <Simver::Build: "say.hi.2.5.people"> (#inspect implementation)
+b.gsub(/hi/, 'hello')                      # => "say.hello.2.5.people" (use like a string)
+b.to_s                                     # => "say.hi.2.5.people" (get string equivalent; #to_str is an alias)
+b.parts                                    # => ["say", "hi", 2, 5, "people"]
+b.to_a                                     # => ["say", "hi", 2, 5, "people"] (yep, effectively same as #parts)
+b.first                                    # => "say"
+b.last                                     # => "people"
+b.length                                   # => 5 (array-style, not string-style; use b.to_s.length for string length)
+b.map { |x| x }                            # => ["say", "hi", 2, 5, "people"] (enumerable array-style)
+b == "say.hi.2.5.people"                   # => true
+"say.hi.2.5.people" == b                   # => false (String class not patched so order is bad and comparison fails)
+require 'simver/patch'
+"say.hi.2.5.people" == b                   # => true
+```
+
 ### Compatible Types
 
 `Simver` versions can be contructed from and compared with the following
@@ -265,7 +291,9 @@ core types:
    number or any 'pre-release' and/or 'build' part, you'll need to
    provide a string representation of the version.
 4. `Symbol`: the symbol is simply converted to and parsed like a string.
-5. `nil`: you cannot create a `Simver` from `nil` but you can compare
+5. `Array` objects: each entry, in order, is used to initialize the
+   appropriate version component.
+6. `nil`: you cannot create a `Simver` from `nil` but you can compare
    them with `nil`. In comparisons, `nil` is always less-than any
    `Simver` value, even `Simver(0)` (`0.0.0`).
 
