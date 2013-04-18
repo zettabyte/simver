@@ -23,6 +23,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_development_dependency 'rake',          '~> 10.0'
+  gem.add_development_dependency 'rdoc',          '~> 4.0'
   gem.add_development_dependency 'bundler',       '~> 1.0'
   gem.add_development_dependency 'rspec',         '~> 2.13'
   gem.add_development_dependency 'cane',          '~> 2.5'
