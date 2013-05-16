@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'simver/version'
+require 'simver/part'
 
 class Simver
   def initialize(source)
